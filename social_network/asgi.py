@@ -10,6 +10,7 @@ https://docs.djangoproject.com/en/4.0/howto/deployment/asgi/
 import os
 import django
 from django.core.asgi import get_asgi_application
+from core.consumers import SocialNetworkConsumer
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'social_network.settings')
 
@@ -28,7 +29,7 @@ application = ProtocolTypeRouter(
         "websocket": AuthMiddlewareStack(
             URLRouter(
                 [
-                    # re_path(r"^ws/social-network/$", SocialNetworkConsumer.as_asgi()),
+                    re_path(r"^ws/social-network/$", SocialNetworkConsumer.as_asgi()),
                 ]
             )
         ),
