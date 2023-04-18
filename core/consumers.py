@@ -15,6 +15,8 @@ class SocialNetworkConsumer(JsonWebsocketConsumer):
         self.accept()
         # Assign the Broadcast group
         async_to_sync(self.channel_layer.group_add)(self.room_name, self.channel_name)
+        # Send you all the messages stored in the database.
+        self.send_list_messages()
 
     def disconnect(self, close_code):
         """
@@ -41,3 +43,31 @@ class SocialNetworkConsumer(JsonWebsocketConsumer):
                     author=data['author'],
                     text=data['text'],
                 )
+                self.send_list_messages()
+            case 'list messages':
+                # Send messages to all clients
+                self.send_list_messages()
+
+    def send_html(self, event):
+        """
+        Event: Send html to client
+        """
+        data = {
+            # Selector is messages_list id defined in send list message method to js to inject it
+            'selector': event['selector'],
+            # Html is defined in send list message method to render html
+            'html': event['html'],
+        }
+        self.send_json(data)
+
+    def send_list_messages(self):
+        """
+        Send list of messages to client
+        """
+        messages = Message.objects.order_by('-created_at')
+        async_to_sync(self.channel_layer.group_send)(self.room_name,
+                                                     {'type': 'send.html', 'selector': '#messages__list',
+                                                      'html': render_to_string('components/_list-messages.html',
+                                                                               {'messages': messages})
+                                                      }
+                                                     )

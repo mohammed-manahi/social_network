@@ -29,13 +29,14 @@ ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS').split(',')
 # Application definition
 
 INSTALLED_APPS = [
+    'channels',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'core.apps.CoreConfig',
+    'core',
 ]
 
 MIDDLEWARE = [
@@ -66,8 +67,9 @@ TEMPLATES = [
     },
 ]
 
+WSGI_APPLICATION = 'social_network.wsgi.application'
 # Enable ASGI server for channels
-ASGI_APPLICATION = 'hello_world.asgi.application'
+ASGI_APPLICATION = 'social_network.asgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
@@ -142,8 +144,7 @@ EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
 CHANNEL_LAYERS = {
     'default': {'BACKEND': 'channels_redis.core.RedisChannelLayer',
                 'CONFIG': {
-                    'hosts': [(os.environ.get('REDIS_HOST'),
-                               os.environ.get('REDIS_PORT'))],
+                    'hosts': [(os.environ.get('REDIS_HOST'), os.environ.get('REDIS_PORT'))],
                     },
                 },
 }
