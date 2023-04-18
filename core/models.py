@@ -7,7 +7,7 @@ class Message(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        db_table = "messages"
+        db_table = 'messages'
         verbose_name_plural = 'Messages'
 
     def __str__(self):
